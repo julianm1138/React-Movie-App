@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useDebounce } from "react-use";
 import "./App.css";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
+const BASE_URL = "https://api.themoviedb.org/3";
 
 const API_OPTIONS = {
   method: "GET",
@@ -22,12 +25,15 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchMovies = async () => {
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const fetchMovies = async (query = "") => {
     setLoading(true);
     setErrorMessage("");
     try {
-      const endpoint =
-        "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc";
+      const endpoint = query
+        ? `${BASE_URL}/search/movie?query=${encodeURI(query)}`
+        : `${BASE_URL}/discover/movie?sort_by=popularity.desc`;
       const response = await fetch(endpoint, API_OPTIONS);
 
       if (!response.ok) {
@@ -52,13 +58,21 @@ function App() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    fetchMovies(debouncedSearch);
+  }, [debouncedSearch]);
+
+  useDebounce(
+    () => {
+      setDebouncedSearch(searchBox);
+    },
+    600,
+    [searchBox]
+  );
 
   return (
     <main>
-      <div></div>
       <div>
         <header className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-4">
           <img src="src/assets/hero-img.png" />
@@ -69,13 +83,15 @@ function App() {
           <Search searchTerm={searchBox} setSearchTerm={setSearchBox} />
         </header>
 
-        <section className="max-w-[80%] flex flex-col justify-center items-center mx-auto">
+        <section className="max-w-[80%] flex flex-col justify-center items-center mx-auto min-h-[600px]">
           <h2 className="my-10 p-5 text-4xl text-gradient text-center">
             All Movies
           </h2>
 
           {loading ? (
-            <Spinner />
+            <div className="mb-12">
+              <Spinner />
+            </div>
           ) : errorMessage ? (
             <p className="text-red-500">{errorMessage}</p>
           ) : (

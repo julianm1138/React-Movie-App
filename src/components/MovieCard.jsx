@@ -2,7 +2,7 @@ function MovieCard({
   movie: { title, vote_average, poster_path, release_date, original_language },
 }) {
   return (
-    <div className="movie-card flex justify-center items-center flex-col gap-y-2">
+    <div className=" movie-card flex justify-center items-center flex-col gap-y-2 hover:brightness-120">
       <img
         src={
           poster_path
@@ -16,8 +16,9 @@ function MovieCard({
       <div className="flex items-center gap-x-2 text-gradient">
         <div className="flex items-center">
           <img
-            className="w-5 mr-1"
+            className="w-5 h-5 mr-1"
             src="src\assets\Rating.svg"
+            loading="lazy"
             alt="star icon"
           />
           <p className="tracking-wider mr-2">{vote_average.toFixed(1)}</p>
