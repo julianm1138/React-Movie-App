@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "react-use";
+import { getTrendingMovies, updateSearchCount } from "./appwrite";
 import "./App.css";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
@@ -19,6 +20,7 @@ const API_OPTIONS = {
 
 function App() {
   const [searchBox, setSearchBox] = useState("");
+  const [trendingMovies, setTrendingMovies] = useState([]);
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -42,13 +44,11 @@ function App() {
 
       const data = await response.json();
 
-      if (data.Response === "false") {
-        setErrorMessage(data.Error || "Failed to fetch movies");
-        setMovies([]);
-        return;
-      }
-
       setMovies(data.results || []);
+
+      if (query && data.results.length > 0) {
+        await updateSearchCount(query, data.results[0]);
+      }
     } catch (error) {
       setErrorMessage(
         "An error occurred fetching movies... Please try again later"
@@ -59,9 +59,22 @@ function App() {
     }
   };
 
+  const loadTrendingMovies = async () => {
+    try {
+      const movies = await getTrendingMovies();
+      setTrendingMovies(movies);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchMovies(debouncedSearch);
   }, [debouncedSearch]);
+
+  useEffect(() => {
+    loadTrendingMovies();
+  }, []);
 
   useDebounce(
     () => {
@@ -70,7 +83,6 @@ function App() {
     600,
     [searchBox]
   );
-
   return (
     <main>
       <div>
@@ -82,9 +94,31 @@ function App() {
           </h1>
           <Search searchTerm={searchBox} setSearchTerm={setSearchBox} />
         </header>
+        {trendingMovies.length > 0 && (
+          <section>
+            <h2 className="text-4xl text-gradient font-bold text-center mt-15">
+              Currently Trending
+            </h2>
+            <ul className="flex justify-center gap-20 overflow-hidden mt-20">
+              {trendingMovies.map((movie, index) => (
+                <li key={movie.$id} className="relative ">
+                  <p className="absolute top-2 left-34 fancy-text">
+                    {index + 1}
+                  </p>
+                  <img
+                    src={movie.poster_url}
+                    alt={`${movie.movie_title}`}
+                    className="w-40 h-auto object-cover rounded"
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <section></section>
 
         <section className="max-w-[80%] flex flex-col justify-center items-center mx-auto min-h-[600px]">
-          <h2 className="my-10 p-5 text-4xl text-gradient text-center">
+          <h2 className="text-center text-gradient font-bold text-3xl my-20">
             All Movies
           </h2>
 
