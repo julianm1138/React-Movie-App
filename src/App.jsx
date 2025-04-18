@@ -86,8 +86,10 @@ function App() {
   );
   return (
     <main>
-      <div>
-        <header className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-4">
+      <div className="pattern" />
+
+      <div className="wrapper">
+        <header>
           <img src={heroImg} />
           <h1 className="text-gradient-2 text-6xl font-bold">
             Find the Latest
@@ -96,20 +98,18 @@ function App() {
           <Search searchTerm={searchBox} setSearchTerm={setSearchBox} />
         </header>
         {trendingMovies.length > 0 && (
-          <section>
-            <h2 className="text-4xl text-gradient font-bold text-center mt-15">
+          <section className="trending">
+            <h2 className="text-4xl text-gradient font-bold text-center -mt-10">
               Currently Trending
             </h2>
-            <ul className="flex justify-center gap-20 overflow-hidden mt-20">
+            <ul>
               {trendingMovies.map((movie, index) => (
                 <li key={movie.$id} className="relative ">
-                  <p className="absolute top-2 left-34 fancy-text">
-                    {index + 1}
-                  </p>
+                  <p className="fancy-text">{index + 1}</p>
                   <img
                     src={movie.poster_url}
                     alt={`${movie.movie_title}`}
-                    className="w-40 h-auto object-cover rounded"
+                    className="w-25"
                   />
                 </li>
               ))}
@@ -117,8 +117,8 @@ function App() {
           </section>
         )}
 
-        <section className="max-w-[80%] flex flex-col justify-center items-center mx-auto min-h-[600px]">
-          <h2 className="text-center text-gradient font-bold text-3xl my-20">
+        <section className="all-movies">
+          <h2 className="text-center text-gradient font-bold text-3xl">
             All Movies
           </h2>
 

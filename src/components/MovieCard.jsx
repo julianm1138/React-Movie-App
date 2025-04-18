@@ -1,3 +1,6 @@
+import Rating from "../assets/Rating.svg";
+import NoPoster from "../assets/No-Poster.png";
+
 function MovieCard({
   movie: { title, vote_average, poster_path, release_date, original_language },
 }) {
@@ -7,7 +10,7 @@ function MovieCard({
         src={
           poster_path
             ? `https://image.tmdb.org/t/p/w500/${poster_path}`
-            : "src/assets/No-Poster.png"
+            : NoPoster
         }
         alt={title}
         className="text-white w-60"
@@ -17,7 +20,7 @@ function MovieCard({
         <div className="flex items-center">
           <img
             className="w-5 h-5 mr-1"
-            src="src\assets\Rating.svg"
+            src={Rating}
             loading="lazy"
             alt="star icon"
           />
