@@ -5,6 +5,7 @@ import "./App.css";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
+import heroImg from "./assets/hero-img.png";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -87,7 +88,7 @@ function App() {
     <main>
       <div>
         <header className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-4">
-          <img src="src/assets/hero-img.png" />
+          <img src={heroImg} />
           <h1 className="text-gradient-2 text-6xl font-bold">
             Find the Latest
             <span className="text-gradient"> Movies</span>
@@ -115,7 +116,6 @@ function App() {
             </ul>
           </section>
         )}
-        <section></section>
 
         <section className="max-w-[80%] flex flex-col justify-center items-center mx-auto min-h-[600px]">
           <h2 className="text-center text-gradient font-bold text-3xl my-20">
